@@ -2,7 +2,7 @@ import React, {Suspense, useEffect} from 'react';
 import './index.css'
 import {Canvas} from "@react-three/fiber";
 import {CubeCamera, Environment, OrbitControls, PerspectiveCamera, SpotLight} from "@react-three/drei";
-import Ground from "./componsable/Ground";
+import Ground from "./componsable/Ground.jsx";
 import {Car} from "./componsable/Car";
 import {Rings} from "./componsable/Rings";
 import {
@@ -20,9 +20,26 @@ function CarShow() {
       <OrbitControls target={[0,0.35,0]} maxPolarAngle={1.45} />
       <PerspectiveCamera makeDefault fov={50} position={[0,0,5]} />
       <color args={[0,0,0]} attach="background" />
-    
+       <SpotLight
+        color={[1, 0.25, 0.7]}
+        intensity={1.5}
+        angle={0.6}
+        penumbra={0.5}
+        position={[5, 5, 0]}
+        castShadow
+        shadow-bias={-0.0001}
+    />
+    <SpotLight
+        color={[0.14, 0.5, 1]}
+        intensity={2}
+        angle={0.6}
+        penumbra={0.5}
+        position={[-5, 5, 0]}
+        castShadow
+        shadow-bias={-0.0001}
+            />
       <Ground />
-      <CubeCamera>
+      <CubeCamera resolution={256} frames={60}>
         {(texture) => (
           <>
             <Environment map={texture} />
@@ -30,12 +47,11 @@ function CarShow() {
           </>
         )}
       </CubeCamera>
-
-          
-    
+      
       <Rings/>
       <FloatingGrid/>
-      {/* <EffectComposer>
+      
+      <EffectComposer>
         <Bloom
           blendFunction={BlendFunction.ADD}
           intensity={1.5}
@@ -49,11 +65,19 @@ function CarShow() {
           blendFunction={BlendFunction.NORMAL}
           offset={[0.0005, 0.0012]}
         />
-      </EffectComposer>   */}
+      </EffectComposer>  
     </>
   )
 }
 
+// 加载动画
+function Loader() {
+  return (
+    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white' }}>
+      正在启动小米 SU7...
+    </div>
+  );
+}
 function App() {
     return (
         <>
@@ -77,11 +101,11 @@ function App() {
             >
                 Loading...
             </div>
-            <Suspense fallback={null}>
-                <Canvas shadows>
+                <Canvas shadows dpr={[1,1.5]}>
+                  <Suspense fallback={null}>
                     <CarShow/>
+                    </Suspense>
                 </Canvas>
-            </Suspense>
         </>
     )
 }
